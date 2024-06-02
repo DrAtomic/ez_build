@@ -1,0 +1,9 @@
+/dts-v1/;
+
+/ {
+	plat_example {
+		compatible = "plat,example";
+		plat_name = "you!";
+	};
+};
+

@@ -6,3 +6,8 @@ linux
 qemu*
 rootfs*
 u-boot*
+*.o
+*.ko
+*mod*
+Module*
+*.cmd

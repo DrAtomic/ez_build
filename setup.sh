@@ -46,7 +46,7 @@ make -j12
 make install
 popd
 
-mkdir -p host_share rootfs/{bin,sbin,etc/init.d,proc,sys,usr/{bin,sbin},host_share}
+mkdir -p rootfs/{bin,sbin,etc/init.d,proc,sys,usr/{bin,sbin},host_share}
 cp -av busybox-1.36.1/_install/* rootfs
 pushd rootfs
 ln -sf bin/busybox init
