@@ -45,6 +45,7 @@ export KERNEL_SRC=$PWD/linux
 export INSTALL_MOD_PATH=$PWD/rootfs
 EOF
 
+# shellcheck disable=SC1091
 source .env
 
 pushd busybox-1.36.1
