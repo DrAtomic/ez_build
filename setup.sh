@@ -89,7 +89,7 @@ popd
 
 pushd qemu
 mkdir build && cd build
-../configure --target-list=arm-softmmu,arm-linux-user
+CFLAGS="-Wno-redundant-decls" ../configure --target-list=arm-softmmu,arm-linux-user
 make QEMU_VIRTFS_ENABLE=y -j12
 popd
 
