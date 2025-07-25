@@ -2,33 +2,41 @@
 
 set -xe
 
-wget https://developer.arm.com/-/media/Files/downloads/gnu-a/10.3-2021.07/binrel/gcc-arm-10.3-2021.07-x86_64-arm-none-linux-gnueabihf.tar.xz
-tar xvf gcc-arm-10.3-2021.07-x86_64-arm-none-linux-gnueabihf.tar.xz
-mv gcc-arm-10.3-2021.07-x86_64-arm-none-linux-gnueabihf arm-gcc
+if [ ! -d "arm-gcc" ]; then
+	wget https://developer.arm.com/-/media/Files/downloads/gnu-a/10.3-2021.07/binrel/gcc-arm-10.3-2021.07-x86_64-arm-none-linux-gnueabihf.tar.xz
+	tar xvf gcc-arm-10.3-2021.07-x86_64-arm-none-linux-gnueabihf.tar.xz
+	mv gcc-arm-10.3-2021.07-x86_64-arm-none-linux-gnueabihf arm-gcc
+fi 
 
-wget https://busybox.net/downloads/busybox-1.36.1.tar.bz2
-tar xvf busybox-1.36.1.tar.bz2
+if [ ! -d "busybox-1.36.1" ]; then
+	wget https://busybox.net/downloads/busybox-1.36.1.tar.bz2
+	tar xvf busybox-1.36.1.tar.bz2
+fi
 
-git clone git@github.com:u-boot/u-boot.git
-pushd u-boot
-git checkout fb5fe1bf84ff489211b333c0165418f0d119d328
-git switch -c development
-popd
+if [ ! -d "u-boot" ]; then
+	git clone git@github.com:u-boot/u-boot.git
+	pushd u-boot
+	git checkout fb5fe1bf84ff489211b333c0165418f0d119d328
+	git switch -c development
+	popd
+fi
 
-git clone https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/
-pushd linux
-git checkout 8a696a29c6905594e4abf78eaafcb62165ac61f1
-git switch -c development
-popd
+if [ ! -d "linux" ]; then
+	git clone https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/
+	pushd linux
+	git checkout 8a696a29c6905594e4abf78eaafcb62165ac61f1
+	git switch -c development
+	popd
+fi
 
-git clone git@github.com:qemu/qemu.git
-pushd qemu
-git checkout 7a1dc45af581d2b643cdbf33c01fd96271616fbd
-git switch -c development
-popd
-
-rm *.xz *.bz2
-
+if [ ! -d "qemu" ]; then
+	git clone git@github.com:qemu/qemu.git
+	pushd qemu
+	git checkout 7a1dc45af581d2b643cdbf33c01fd96271616fbd
+	git switch -c development
+	popd
+fi
+ 
 cat << EOF > .env
 export ARCH=arm 
 export CROSS_COMPILE=$PWD/arm-gcc/bin/arm-none-linux-gnueabihf- 
@@ -50,7 +58,7 @@ mkdir -p rootfs/{bin,sbin,etc/init.d,proc,sys,usr/{bin,sbin},host_share}
 cp -av busybox-1.36.1/_install/* rootfs
 pushd rootfs
 ln -sf bin/busybox init
-mkdir dev
+mkdir dev -p
 cd dev
 fakeroot sh -c 'mknod -m 660 mem c 1 1 &&
 mknod -m 660 tty0 c 4 0 &&
@@ -88,7 +96,7 @@ mv u-boot.bin ..
 popd
 
 pushd qemu
-mkdir build && cd build
+mkdir build -p && cd build
 CFLAGS="-Wno-redundant-decls" ../configure --target-list=arm-softmmu,arm-linux-user
 make QEMU_VIRTFS_ENABLE=y -j12
 popd

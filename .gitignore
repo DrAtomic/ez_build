@@ -11,3 +11,4 @@ u-boot*
 *mod*
 Module*
 *.cmd
+*.dtb
